@@ -1,0 +1,2 @@
+# inventory-detector
+这是一个检测背包的MOD，可以用来记录MC中物品的拾取统计并实时显示，旨在统计Hypixel服务器上拾取物品数目。
