@@ -17,35 +17,30 @@ public class CommandEvent {
         dispatcher.register(
                 Commands.literal(Utils.MOD_ID).then(
                         Commands.literal("reset")
-                                .requires((commandSource) -> commandSource.hasPermissionLevel(0))
                                 .executes(ResetCommand.instance)
                 )
         );
         dispatcher.register(
                 Commands.literal(Utils.MOD_ID).then(
                         Commands.literal("reload")
-                                .requires((commandSource) -> commandSource.hasPermissionLevel(0))
                                 .executes(ReloadCommand.instance)
                 )
         );
         dispatcher.register(
                 Commands.literal(Utils.MOD_ID).then(
                         Commands.literal("disable")
-                                .requires((commandSource) -> commandSource.hasPermissionLevel(0))
                                 .executes(DisableCommand.instance)
                 )
         );
         dispatcher.register(
                 Commands.literal(Utils.MOD_ID).then(
                         Commands.literal("enable")
-                                .requires((commandSource) -> commandSource.hasPermissionLevel(0))
                                 .executes(EnableCommand.instance)
                 )
         );
         dispatcher.register(
                 Commands.literal(Utils.MOD_ID).then(
                         Commands.literal("save")
-                                .requires((commandSource) -> commandSource.hasPermissionLevel(0))
                                 .executes(SaveCommand.instance)
                 )
         );

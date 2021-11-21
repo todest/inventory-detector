@@ -36,11 +36,6 @@ public class InventoryDetectEventLoader {
         previous.addAll(LatestInventory);
     }
 
-    public static void Init() {
-        previous = null;
-        LatestInventory = NonNullList.create();
-    }
-
     public NonNullList<ItemStack> checkDiffWithInventory(NonNullList<ItemStack> pre, NonNullList<ItemStack> now) {
         NonNullList<Item> preItem = NonNullList.create();
         NonNullList<Item> nowItem = NonNullList.create();
@@ -78,7 +73,6 @@ public class InventoryDetectEventLoader {
         Minecraft mc = Minecraft.getInstance();
         ClientPlayerEntity player = mc.player;
         if (isCanceled || isCanceledPermanent || player == null) {
-            System.out.println(isCanceled);
             return;
         }
         LatestInventory = player.inventory.mainInventory;
