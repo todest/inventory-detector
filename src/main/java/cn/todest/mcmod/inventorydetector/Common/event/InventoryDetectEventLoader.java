@@ -1,7 +1,6 @@
 package cn.todest.mcmod.inventorydetector.Common.event;
 
 import cn.todest.mcmod.inventorydetector.Common.config.Config;
-import javafx.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.item.Item;
@@ -13,7 +12,6 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,12 +19,16 @@ import java.util.Map;
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InventoryDetectEventLoader {
     public static Map<Item, Integer> ItemCount;
-    private static boolean isCanceled = false;
     private static NonNullList<ItemStack> previous;
     private static NonNullList<ItemStack> LatestInventory;
+    private static boolean isCanceled = false;
+    private static boolean isCanceledPermanent = false;
 
-    public static void setCanceled(boolean cancel) {
+    public static void setCanceled(boolean cancel, boolean permanent) {
         isCanceled = cancel;
+        if (permanent) {
+            isCanceledPermanent = cancel;
+        }
     }
 
     public static void syncPrevious() {
@@ -34,31 +36,38 @@ public class InventoryDetectEventLoader {
         previous.addAll(LatestInventory);
     }
 
+    public static void Init() {
+        previous = null;
+        LatestInventory = NonNullList.create();
+    }
+
     public NonNullList<ItemStack> checkDiffWithInventory(NonNullList<ItemStack> pre, NonNullList<ItemStack> now) {
-        ArrayList<Pair<Item, Integer>> preItem = new ArrayList<>();
-        ArrayList<Pair<Item, Integer>> nowItem = new ArrayList<>();
+        NonNullList<Item> preItem = NonNullList.create();
+        NonNullList<Item> nowItem = NonNullList.create();
         NonNullList<ItemStack> inventoryItemAddedList = NonNullList.create();
         for (ItemStack itemStack : pre) {
-            for (int j = 0; j < itemStack.getCount(); j++) {
-                preItem.add(new Pair<>(itemStack.getItem(), j));
+            for (int i = 0; i < itemStack.getCount(); i++) {
+                preItem.add(itemStack.getItem());
             }
         }
         for (ItemStack itemStack : now) {
-            for (int j = 0; j < itemStack.getCount(); j++) {
-                nowItem.add(new Pair<>(itemStack.getItem(), j));
+            for (int i = 0; i < itemStack.getCount(); i++) {
+                nowItem.add(itemStack.getItem());
             }
         }
-        nowItem.removeAll(preItem);
-        for (Pair<Item, Integer> pair : nowItem) {
+        for (Item item : preItem) {
+            nowItem.remove(item);
+        }
+        for (Item item : nowItem) {
             boolean flag = false;
             for (ItemStack itemStack : inventoryItemAddedList) {
-                if (itemStack.getItem().equals(pair.getKey())) {
+                if (itemStack.getItem().equals(item)) {
                     itemStack.setCount(itemStack.getCount() + 1);
                     flag = true;
                 }
             }
             if (!flag) {
-                inventoryItemAddedList.add(new ItemStack(pair.getKey(), 1));
+                inventoryItemAddedList.add(new ItemStack(item, 1));
             }
         }
         return inventoryItemAddedList;
@@ -68,7 +77,8 @@ public class InventoryDetectEventLoader {
     public void inventoryChangedEvent(RenderWorldLastEvent event) {
         Minecraft mc = Minecraft.getInstance();
         ClientPlayerEntity player = mc.player;
-        if (isCanceled || player == null) {
+        if (isCanceled || isCanceledPermanent || player == null) {
+            System.out.println(isCanceled);
             return;
         }
         LatestInventory = player.inventory.mainInventory;
@@ -81,7 +91,6 @@ public class InventoryDetectEventLoader {
         } else {
             NonNullList<ItemStack> inventoryChange = checkDiffWithInventory(previous, LatestInventory);
             syncPrevious();
-
             for (ItemStack itemStack : inventoryChange) {
                 Item item = itemStack.getItem();
                 if (Config.RecordedItems.get().contains(item.toString())) {

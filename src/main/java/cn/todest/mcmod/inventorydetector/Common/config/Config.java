@@ -62,6 +62,7 @@ public class Config {
 
     public static void bake() {
         for (ConfigValue<Integer> configValue : Count) {
+            InventoryDetectEventLoader.ItemCount.clear();
             InventoryDetectEventLoader.ItemCount.put(Utils.getItemByName(configValue.getPath().get(2)), configValue.get());
         }
     }

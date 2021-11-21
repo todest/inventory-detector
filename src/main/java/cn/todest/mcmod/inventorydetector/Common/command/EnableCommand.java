@@ -7,13 +7,14 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class ModCommand implements Command<CommandSource> {
-    public static ModCommand instance = new ModCommand();
+public class EnableCommand implements Command<CommandSource> {
+    public static EnableCommand instance = new EnableCommand();
 
     @Override
     public int run(CommandContext<CommandSource> context) {
-        InventoryDetectEventLoader.ItemCount = null;
-        context.getSource().sendFeedback(new TranslationTextComponent("cmd." + Utils.MOD_ID + ".reset"), false);
+        InventoryDetectEventLoader.setCanceled(false, true);
+        InventoryDetectEventLoader.syncPrevious();
+        context.getSource().sendFeedback(new TranslationTextComponent("cmd." + Utils.MOD_ID + ".enable"), false);
         return 0;
     }
 }
