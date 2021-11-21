@@ -1,7 +1,0 @@
-{
-  "cmd.inventory-detector.reset": "记录已清除！",
-  "cmd.inventory-detector.reload": "配置已重载！",
-  "cmd.inventory-detector.save": "配置已保存！",
-  "cmd.inventory-detector.disable": "背包检查事件已禁用！",
-  "cmd.inventory-detector.enable": "背包检查事件已启用！"
-}

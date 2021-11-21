@@ -1,7 +1,0 @@
-{
-  "cmd.inventory-detector.reset": "Record has been reset！",
-  "cmd.inventory-detector.reload": "Configuration has been reload！",
-  "cmd.inventory-detector.save": "Configuration has been saved！",
-  "cmd.inventory-detector.disable": "InventoryChangeDetectEvent has been disabled！",
-  "cmd.inventory-detector.enable": "InventoryChangeDetectEvent has been enabled！"
-}
