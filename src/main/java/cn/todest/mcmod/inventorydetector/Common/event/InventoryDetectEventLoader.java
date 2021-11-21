@@ -21,11 +21,17 @@ import java.util.Map;
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InventoryDetectEventLoader {
     public static Map<Item, Integer> ItemCount;
-    public static boolean isCanceled = false;
-    public NonNullList<ItemStack> previous;
+    private static boolean isCanceled = false;
+    private static NonNullList<ItemStack> previous;
+    private static NonNullList<ItemStack> LatestInventory;
 
     public static void setCanceled(boolean cancel) {
         isCanceled = cancel;
+    }
+
+    public static void syncPrevious() {
+        previous = NonNullList.create();
+        previous.addAll(LatestInventory);
     }
 
     public NonNullList<ItemStack> checkDiffWithInventory(NonNullList<ItemStack> pre, NonNullList<ItemStack> now) {
@@ -65,20 +71,18 @@ public class InventoryDetectEventLoader {
         if (isCanceled || player == null) {
             return;
         }
-        NonNullList<ItemStack> LatestInventory = player.inventory.mainInventory;
+        LatestInventory = player.inventory.mainInventory;
         if (previous == null) {
             if (ItemCount == null) {
                 ItemCount = new HashMap<>();
             }
             Config.bake();
-            previous = NonNullList.create();
-            previous.addAll(LatestInventory);
+            syncPrevious();
         } else {
-            NonNullList<ItemStack> change = checkDiffWithInventory(previous, LatestInventory);
-            previous = NonNullList.create();
-            previous.addAll(LatestInventory);
+            NonNullList<ItemStack> inventoryChange = checkDiffWithInventory(previous, LatestInventory);
+            syncPrevious();
 
-            for (ItemStack itemStack : change) {
+            for (ItemStack itemStack : inventoryChange) {
                 Item item = itemStack.getItem();
                 if (Config.RecordedItems.get().contains(item.toString())) {
                     ItemCount.put(item, itemStack.getCount() + (ItemCount.get(item) == null ? 0 : ItemCount.get(item)));
