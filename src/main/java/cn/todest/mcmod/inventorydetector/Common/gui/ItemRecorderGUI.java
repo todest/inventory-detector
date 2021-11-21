@@ -58,6 +58,10 @@ public class ItemRecorderGUI extends AbstractGui {
             int x2 = x4 - maxCountLength * 8; // [
             int x3 = (x2 + x4) / 2 + 1; // count
             int x1 = x2 - maxNameLength * 5; // name
+            if (Minecraft.getInstance().getLanguageManager().getCurrentLanguage()
+                    .toString().equals("English (Australia)")) {
+                x1 = x2 - maxNameLength * 3;
+            }
             drawString(matrixStack, this.minecraft.fontRenderer,
                     name + ": ", x1, height / 10 + typesNum * 10, Config.NameColor.get()
             );
