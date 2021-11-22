@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 @Cancelable
@@ -40,35 +41,52 @@ public class DetectorEvent {
         previous = LatestInventory.clone();
     }
 
+    public ArrayList<ItemStack> removeDuplicate(ArrayList<ItemStack> pre, ArrayList<ItemStack> now) {
+        for (ItemStack itemStack : pre) {
+            Iterator<ItemStack> iterator = now.iterator();
+            while (iterator.hasNext()) {
+                ItemStack item = iterator.next();
+                if (itemStack.getItem().equals(item.getItem()) &&
+                        itemStack.getDisplayName().equals(item.getDisplayName())
+                ) {
+                    iterator.remove();
+                }
+            }
+        }
+        return now;
+    }
+
     public ArrayList<ItemStack> checkDiffWithInventory(ItemStack[] pre, ItemStack[] now) {
-        ArrayList<Item> preItem = new ArrayList<Item>();
-        ArrayList<Item> nowItem = new ArrayList<Item>();
+        ArrayList<ItemStack> preItem = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> nowItem = new ArrayList<ItemStack>();
         ArrayList<ItemStack> inventoryItemAddedList = new ArrayList<ItemStack>();
         for (ItemStack itemStack : pre) {
             if (itemStack == null) continue;
+            ItemStack tempItem = itemStack.copy();
+            tempItem.stackSize = 1;
             for (int i = 0; i < itemStack.stackSize; i++) {
-                preItem.add(itemStack.getItem());
+                preItem.add(tempItem);
             }
         }
         for (ItemStack itemStack : now) {
             if (itemStack == null) continue;
+            ItemStack tempItem = itemStack.copy();
+            tempItem.stackSize = 1;
             for (int i = 0; i < itemStack.stackSize; i++) {
-                nowItem.add(itemStack.getItem());
+                nowItem.add(tempItem);
             }
         }
-        for (Item item : preItem) {
-            nowItem.remove(item);
-        }
-        for (Item item : nowItem) {
+        nowItem = removeDuplicate(preItem, nowItem);
+        for (ItemStack item : nowItem) {
             boolean flag = false;
             for (ItemStack itemStack : inventoryItemAddedList) {
-                if (itemStack.getItem().equals(item)) {
+                if (itemStack.getItem().equals(item.getItem()) && itemStack.getDisplayName().equals(item.getDisplayName())) {
                     itemStack.stackSize = itemStack.stackSize + 1;
                     flag = true;
                 }
             }
             if (!flag) {
-                inventoryItemAddedList.add(new ItemStack(item, 1));
+                inventoryItemAddedList.add(item);
             }
         }
         return inventoryItemAddedList;
@@ -92,7 +110,7 @@ public class DetectorEvent {
             syncPrevious();
             for (ItemStack itemStack : inventoryChange) {
                 Item item = itemStack.getItem();
-                if (Utils.isRecordItem("diamond", "")) {
+                if (Utils.isRecordItem(item.delegate.name(), itemStack.getDisplayName())) {
                     ItemCount.put(item,
                             itemStack.stackSize + (ItemCount.get(item) == null ? 0 : ItemCount.get(item))
                     );
