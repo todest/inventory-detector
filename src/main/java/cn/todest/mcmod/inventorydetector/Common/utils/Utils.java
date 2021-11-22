@@ -1,24 +1,19 @@
 package cn.todest.mcmod.inventorydetector.common.utils;
 
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 
-import static java.util.Arrays.asList;
 
 public class Utils {
-    public static final ArrayList<Pair<String, String>> RecordItems = new ArrayList<Pair<String, String>>(
-            asList(
-                    new Pair<String, String>("diamond", ""),
-                    new Pair<String, String>("iron_ingot", ""),
-                    new Pair<String, String>("emerald", "")
-            )
-    );
+    public static final ArrayList<ArrayList<String>> RecordItems = new ArrayList<ArrayList<String>>() {{
+        add(new ArrayList<String>(Arrays.asList("minecraft:diamond", "")));
+        add(new ArrayList<String>(Arrays.asList("minecraft:iron_ingot", "")));
+    }};
 
     public static boolean isRecordItem(String type, String name) {
-        for (Pair<String, String> pair : RecordItems) {
-            if (pair.getKey().equals(type) && (pair.getValue().equals("") || pair.getValue().contains(name))) {
+        for (ArrayList<String> arrayList : RecordItems) {
+            if (arrayList.get(0).equals(type) && (arrayList.get(1).equals("") || arrayList.get(1).contains(name))) {
                 return true;
             }
         }
