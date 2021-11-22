@@ -3,7 +3,6 @@ package cn.todest.mcmod.inventorydetector.common.events;
 import cn.todest.mcmod.inventorydetector.common.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 @Cancelable
 public class DetectorEvent {
-    public static Map<Item, Integer> ItemCount;
+    public static Map<ItemStack, Integer> ItemCount;
     private static ItemStack[] previous;
     private static ItemStack[] LatestInventory;
     private static boolean isCanceled = false;
@@ -50,6 +49,7 @@ public class DetectorEvent {
                         itemStack.getDisplayName().equals(item.getDisplayName())
                 ) {
                     iterator.remove();
+                    break;
                 }
             }
         }
@@ -99,20 +99,19 @@ public class DetectorEvent {
         if (isCanceled || isCanceledPermanent || player == null) {
             return;
         }
-        LatestInventory = player.inventory.mainInventory.clone();
+        LatestInventory = player.inventory.mainInventory;
         if (previous == null) {
             if (ItemCount == null) {
-                ItemCount = new HashMap<Item, Integer>();
+                ItemCount = new HashMap<ItemStack, Integer>();
             }
             syncPrevious();
         } else {
             ArrayList<ItemStack> inventoryChange = checkDiffWithInventory(previous, LatestInventory);
             syncPrevious();
             for (ItemStack itemStack : inventoryChange) {
-                Item item = itemStack.getItem();
-                if (Utils.isRecordItem(item.delegate.name(), itemStack.getDisplayName())) {
-                    ItemCount.put(item,
-                            itemStack.stackSize + (ItemCount.get(item) == null ? 0 : ItemCount.get(item))
+                if (Utils.isRecordItem(itemStack.getItem().delegate.name(), itemStack.getDisplayName())) {
+                    ItemCount.put(itemStack,
+                            itemStack.stackSize + (ItemCount.get(itemStack) == null ? 0 : ItemCount.get(itemStack))
                     );
                 }
             }

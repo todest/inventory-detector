@@ -1,9 +1,9 @@
 package cn.todest.mcmod.inventorydetector.common.events;
 
+import cn.todest.mcmod.inventorydetector.common.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -16,7 +16,7 @@ public class RecordGuiEvent {
 
     @SubscribeEvent
     public void renderGUI(RenderGameOverlayEvent event) {
-        Map<Item, Integer> ItemCount = DetectorEvent.ItemCount;
+        Map<ItemStack, Integer> ItemCount = DetectorEvent.ItemCount;
         if (ItemCount == null) {
             return;
         }
@@ -24,9 +24,9 @@ public class RecordGuiEvent {
         int width = minecraft.displayWidth / 4;
         int typesNum = 0, maxNameLength = 0, maxCountLength = 0, count;
         String name;
-        for (Item item : ItemCount.keySet()) {
-            name = new ItemStack(item, 1).getDisplayName();
-            count = ItemCount.get(item);
+        for (ItemStack itemStack : ItemCount.keySet()) {
+            name = Utils.getShortName(itemStack.getDisplayName());
+            count = ItemCount.get(itemStack);
             if (count == 0) {
                 continue;
             }
@@ -38,20 +38,20 @@ public class RecordGuiEvent {
             }
         }
         maxCountLength = String.valueOf(maxCountLength).length();
-        for (Item item : ItemCount.keySet()) {
-            name = new ItemStack(item, 1).getDisplayName();
-            count = ItemCount.get(item);
+        for (ItemStack itemStack : ItemCount.keySet()) {
+            name = Utils.getShortName(itemStack.getDisplayName());
+            count = ItemCount.get(itemStack);
             if (count == 0) {
                 continue;
             }
             int x4 = width - 10; // ]
             int x2 = x4 - maxCountLength * 8; // [
             int x3 = x2 + 3; // count
-            int x1 = x2 - maxNameLength * 6; // name
-            if (Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage()
-                    .toString().equals("English (Australia)")) {
-                x1 = x2 - maxNameLength * 3;
-            }
+//            int x1 = x2 - maxNameLength * 6; // name
+//            if (Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage()
+//                    .toString().equals("English (Australia)")) {
+            int x1 = x2 - maxNameLength * 3;
+//            }
             fontRenderer.drawString(
                     name + ": ", x1, height / 10 + typesNum * 10, 0xFFFFFF
             );
