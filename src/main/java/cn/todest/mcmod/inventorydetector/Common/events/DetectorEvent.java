@@ -1,5 +1,6 @@
 package cn.todest.mcmod.inventorydetector.common.events;
 
+import cn.todest.mcmod.inventorydetector.common.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -13,21 +14,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Cancelable
-public class DetectorEvents {
+public class DetectorEvent {
     public static Map<Item, Integer> ItemCount;
     private static ItemStack[] previous;
     private static ItemStack[] LatestInventory;
     private static boolean isCanceled = false;
     private static boolean isCanceledPermanent = false;
 
-    public static void setCanceled(boolean cancel, boolean permanent) {
+    public static void setCanceled(boolean cancel) {
         isCanceled = cancel;
+    }
+
+    public static void setCanceled(boolean cancel, boolean permanent) {
+        setCanceled(cancel);
         if (permanent) {
             isCanceledPermanent = cancel;
         }
     }
 
     public static void syncPrevious() {
+        if (LatestInventory == null) {
+            previous = null;
+            return;
+        }
         previous = LatestInventory.clone();
     }
 
@@ -83,11 +92,12 @@ public class DetectorEvents {
             syncPrevious();
             for (ItemStack itemStack : inventoryChange) {
                 Item item = itemStack.getItem();
-                ItemCount.put(item, itemStack.stackSize + (ItemCount.get(item) == null ? 0 : ItemCount.get(item)));
+                if (Utils.isRecordItem("diamond", "")) {
+                    ItemCount.put(item,
+                            itemStack.stackSize + (ItemCount.get(item) == null ? 0 : ItemCount.get(item))
+                    );
+                }
             }
-//            for (Item item : ItemCount.keySet()) {
-//                System.out.println(item.delegate.name() + ItemCount.get(item));
-//            }
         }
     }
 }
