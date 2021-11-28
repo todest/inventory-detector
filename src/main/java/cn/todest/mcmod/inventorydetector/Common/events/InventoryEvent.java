@@ -1,5 +1,6 @@
 package cn.todest.mcmod.inventorydetector.common.events;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -9,9 +10,11 @@ public class InventoryEvent {
 
     @SubscribeEvent
     public void openInventory(GuiScreenEvent event) {
-        openTime = System.currentTimeMillis();
-        DetectorEvent.setCanceled(true);
-        DetectorEvent.syncPrevious();
+        if (event.gui.mc.currentScreen instanceof GuiContainer) {
+            openTime = System.currentTimeMillis();
+            DetectorEvent.setCanceled(true);
+            DetectorEvent.syncPrevious();
+        }
     }
 
     @SubscribeEvent

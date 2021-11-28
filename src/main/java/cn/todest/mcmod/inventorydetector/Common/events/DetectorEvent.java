@@ -21,10 +21,6 @@ public class DetectorEvent {
     private static boolean isCanceled = false;
     private static boolean isCanceledPermanent = false;
 
-    public static void setCanceled(boolean cancel) {
-        isCanceled = cancel;
-    }
-
     public static void setCanceled(boolean cancel, boolean permanent) {
         setCanceled(cancel);
         if (permanent) {
@@ -32,8 +28,16 @@ public class DetectorEvent {
         }
     }
 
+    public static boolean getCanceled() {
+        return isCanceledPermanent;
+    }
+
+    public static void setCanceled(boolean cancel) {
+        isCanceled = cancel;
+    }
+
     public static void syncPrevious() {
-        if (LatestInventory == null) {
+        if (LatestInventory == null || LatestInventory.length == 0) {
             previous = null;
             return;
         }
@@ -106,7 +110,6 @@ public class DetectorEvent {
             }
             syncPrevious();
         } else {
-//            System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
             ArrayList<ItemStack> inventoryChange = checkDiffWithInventory(previous, LatestInventory);
             syncPrevious();
             for (ItemStack itemStack : inventoryChange) {

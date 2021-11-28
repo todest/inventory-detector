@@ -4,6 +4,7 @@ import cn.todest.mcmod.inventorydetector.common.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,12 +18,15 @@ public class RecordGuiEvent {
     @SubscribeEvent
     public void renderGUI(RenderGameOverlayEvent event) {
         Map<ItemStack, Integer> ItemCount = DetectorEvent.ItemCount;
-        if (ItemCount == null) {
+        if (ItemCount == null || DetectorEvent.getCanceled()) {
+            minecraft.renderEngine.bindTexture(Gui.icons);
             return;
         }
-        int height = minecraft.displayHeight / 4;
-        int width = minecraft.displayWidth / 4;
+        ScaledResolution scaledresolution = new ScaledResolution(minecraft);
+        int height = scaledresolution.getScaledHeight();
+        int width = scaledresolution.getScaledWidth();
         int typesNum = 0, maxNameLength = 0, maxCountLength = 0, count;
+        int bracketLength = fontRenderer.getStringWidth("[");
         String name;
         for (ItemStack itemStack : ItemCount.keySet()) {
             name = Utils.getShortName(itemStack.getItem().delegate.name(), itemStack.getDisplayName());
@@ -30,42 +34,38 @@ public class RecordGuiEvent {
             if (count == 0) {
                 continue;
             }
-            if (maxNameLength < name.length() * 2) {
-                maxNameLength = name.length() * 2;
+            if (maxNameLength < fontRenderer.getStringWidth(name)) {
+                maxNameLength = fontRenderer.getStringWidth(name);
             }
-            if (maxCountLength < count) {
-                maxCountLength = count;
+            if (maxCountLength < fontRenderer.getStringWidth(String.valueOf(count))) {
+                maxCountLength = fontRenderer.getStringWidth(String.valueOf(count));
             }
         }
-        maxCountLength = String.valueOf(maxCountLength).length();
         for (ItemStack itemStack : ItemCount.keySet()) {
             name = Utils.getShortName(itemStack.getItem().delegate.name(), itemStack.getDisplayName());
             count = ItemCount.get(itemStack);
             if (count == 0) {
                 continue;
             }
-            int x4 = width - 10; // ]
-            int x2 = x4 - maxCountLength * 8; // [
-            int x3 = x2 + 3; // count
-//            int x1 = x2 - maxNameLength * 6; // name
-//            if (Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage()
-//                    .toString().equals("English (Australia)")) {
-            int x1 = x2 - maxNameLength * 3;
-//            }
-            fontRenderer.drawString(
-                    name + ": ", x1, height / 10 + typesNum * 10, 0xFFFFFF
+            float x4 = width - 10; // ]
+            float x2 = x4 - maxCountLength - 6; // [
+            float x3 = x2 + 2 + bracketLength; // count
+            float x1 = x2 - maxNameLength - 6;
+            fontRenderer.drawStringWithShadow(
+                    name + ": ", x1, (float) (height / 10.0 + typesNum * 10), 0xFF0000
             );
-            fontRenderer.drawString(
-                    "[", x2, height / 10 + typesNum * 10, 0xFFFFFF
+            fontRenderer.drawStringWithShadow(
+                    "[", x2, (float) (height / 10.0 + typesNum * 10), 0x808080
             );
-            fontRenderer.drawString(
-                    "]", x4, height / 10 + typesNum * 10, 0xFFFFFF
+            fontRenderer.drawStringWithShadow(
+                    "]", x4, (float) (height / 10.0 + typesNum * 10), 0x808080
             );
-            fontRenderer.drawString(
-                    String.valueOf(count), x3, height / 10 + typesNum * 10, 0xFFFFFF
+            fontRenderer.drawStringWithShadow(
+                    String.valueOf(count), x3, (float) (height / 10.0 + typesNum * 10), 0x00FF00
             );
             typesNum++;
         }
+        fontRenderer.drawString("", 0, 0, 0xFFFFFF);
         minecraft.renderEngine.bindTexture(Gui.icons);
     }
 }
