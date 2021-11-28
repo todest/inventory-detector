@@ -15,7 +15,7 @@ public class Utils {
         add(new ArrayList<String>(Arrays.asList("minecraft:skull", "Young Dragon Fragment", "Young")));
         add(new ArrayList<String>(Arrays.asList("minecraft:skull", "Unstable Dragon Fragment", "Unstable")));
         add(new ArrayList<String>(Arrays.asList("minecraft:skull", "Superior Dragon Fragment", "Superior")));
-        add(new ArrayList<String>(Arrays.asList("minecraft:netherbrick", "Livid Fragment", "Livid")));
+        add(new ArrayList<String>(Arrays.asList("minecraft:nether_brick", "Livid Fragment", "Livid")));
         add(new ArrayList<String>(Arrays.asList("minecraft:red_mushroom", "Bonzo Fragment", "Bonzo")));
         add(new ArrayList<String>(Arrays.asList("minecraft:red_flower", "Scarf Fragment", "Scarf")));
     }};
