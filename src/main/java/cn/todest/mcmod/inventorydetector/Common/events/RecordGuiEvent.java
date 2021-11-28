@@ -25,7 +25,7 @@ public class RecordGuiEvent {
         int typesNum = 0, maxNameLength = 0, maxCountLength = 0, count;
         String name;
         for (ItemStack itemStack : ItemCount.keySet()) {
-            name = Utils.getShortName(itemStack.getDisplayName());
+            name = Utils.getShortName(itemStack.getItem().delegate.name(), itemStack.getDisplayName());
             count = ItemCount.get(itemStack);
             if (count == 0) {
                 continue;
@@ -39,7 +39,7 @@ public class RecordGuiEvent {
         }
         maxCountLength = String.valueOf(maxCountLength).length();
         for (ItemStack itemStack : ItemCount.keySet()) {
-            name = Utils.getShortName(itemStack.getDisplayName());
+            name = Utils.getShortName(itemStack.getItem().delegate.name(), itemStack.getDisplayName());
             count = ItemCount.get(itemStack);
             if (count == 0) {
                 continue;

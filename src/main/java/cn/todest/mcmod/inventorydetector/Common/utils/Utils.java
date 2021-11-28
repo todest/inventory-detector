@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 public class Utils {
     public static final ArrayList<ArrayList<String>> RecordItems = new ArrayList<ArrayList<String>>() {{
+        add(new ArrayList<String>(Arrays.asList("minecraft:diamond", "", "DIAM")));
         add(new ArrayList<String>(Arrays.asList("minecraft:diamond_horse_armor", "Diamante's Handle", "Handle")));
         add(new ArrayList<String>(Arrays.asList("minecraft:ender_eye", "L.A.S.R.'s Eye", "Eye")));
         add(new ArrayList<String>(Arrays.asList("minecraft:firework_charge", "Jolly Pink Rock", "Rock")));
@@ -29,9 +30,9 @@ public class Utils {
         return false;
     }
 
-    public static String getShortName(String displayName) {
+    public static String getShortName(String name, String displayName) {
         for (ArrayList<String> arrayList : RecordItems) {
-            if (arrayList.get(1).equals(displayName)) {
+            if (arrayList.get(0).equals(name) && (arrayList.get(1).equals("") || arrayList.get(1).equals(displayName))) {
                 return arrayList.get(2);
             }
         }

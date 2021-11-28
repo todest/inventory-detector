@@ -106,13 +106,28 @@ public class DetectorEvent {
             }
             syncPrevious();
         } else {
+//            System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
             ArrayList<ItemStack> inventoryChange = checkDiffWithInventory(previous, LatestInventory);
             syncPrevious();
             for (ItemStack itemStack : inventoryChange) {
                 if (Utils.isRecordItem(itemStack.getItem().delegate.name(), itemStack.getDisplayName())) {
-                    ItemCount.put(itemStack,
-                            itemStack.stackSize + (ItemCount.get(itemStack) == null ? 0 : ItemCount.get(itemStack))
-                    );
+                    boolean isExist = false;
+                    for (ItemStack key : ItemCount.keySet()) {
+                        if (key.getItem().delegate.name().equals(itemStack.getItem().delegate.name())
+                                && key.getDisplayName().equals(itemStack.getDisplayName())
+                        ) {
+                            ItemCount.put(key, itemStack.stackSize +
+                                    (ItemCount.get(key) == null ? 0 : ItemCount.get(key))
+                            );
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if (!isExist) {
+                        ItemCount.put(itemStack, itemStack.stackSize +
+                                (ItemCount.get(itemStack) == null ? 0 : ItemCount.get(itemStack))
+                        );
+                    }
                 }
             }
         }
