@@ -16,25 +16,11 @@ import java.util.Map;
 @Cancelable
 public class DetectorEvent {
     public static Map<ItemStack, Integer> ItemCount;
+    public static boolean isCanceled = false;
+    public static boolean isCanceledPermanent = true;
+    public static boolean isAutomatic = true;
     private static ItemStack[] previous;
     private static ItemStack[] LatestInventory;
-    private static boolean isCanceled = false;
-    private static boolean isCanceledPermanent = false;
-
-    public static void setCanceled(boolean cancel, boolean permanent) {
-        setCanceled(cancel);
-        if (permanent) {
-            isCanceledPermanent = cancel;
-        }
-    }
-
-    public static boolean getCanceled() {
-        return isCanceledPermanent;
-    }
-
-    public static void setCanceled(boolean cancel) {
-        isCanceled = cancel;
-    }
 
     public static void syncPrevious() {
         if (LatestInventory == null || LatestInventory.length == 0) {

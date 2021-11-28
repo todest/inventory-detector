@@ -12,7 +12,7 @@ public class InventoryEvent {
     public void openInventory(GuiScreenEvent event) {
         if (event.gui.mc.currentScreen instanceof GuiContainer) {
             openTime = System.currentTimeMillis();
-            DetectorEvent.setCanceled(true);
+            DetectorEvent.isCanceled = true;
             DetectorEvent.syncPrevious();
         }
     }
@@ -20,7 +20,7 @@ public class InventoryEvent {
     @SubscribeEvent
     public void closeInventory(RenderWorldLastEvent event) {
         if (System.currentTimeMillis() - openTime > 50) {
-            DetectorEvent.setCanceled(false);
+            DetectorEvent.isCanceled = false;
         }
     }
 }

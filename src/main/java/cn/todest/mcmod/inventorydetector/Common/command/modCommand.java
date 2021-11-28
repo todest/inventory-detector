@@ -20,21 +20,39 @@ public class ModCommand extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "inventory-detector <enable|disable|reset>";
+        return "inventory-detector <enable|disable|reset|auto>";
     }
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("enable")) {
-                DetectorEvent.setCanceled(false, true);
+                DetectorEvent.isCanceledPermanent = false;
                 notifyOperators(sender, this, "Enabled Success!");
             } else if (args[0].equalsIgnoreCase("disable")) {
-                DetectorEvent.setCanceled(true, true);
+                DetectorEvent.isCanceledPermanent = true;
                 notifyOperators(sender, this, "Disabled Success!");
             } else if (args[0].equalsIgnoreCase("reset")) {
                 DetectorEvent.ItemCount.clear();
                 notifyOperators(sender, this, "Reset Success!");
+            } else if (args[0].equalsIgnoreCase("auto")) {
+                if (args.length > 1) {
+                    if (args[1].equalsIgnoreCase("true")) {
+                        if (!DetectorEvent.isAutomatic) {
+                            DetectorEvent.isAutomatic = true;
+                            DetectorEvent.isCanceledPermanent = true;
+                        }
+                        notifyOperators(sender, this, "Automatic is Enabled!");
+                    } else if (args[1].equalsIgnoreCase("false")) {
+                        if (DetectorEvent.isAutomatic) {
+                            DetectorEvent.isAutomatic = false;
+                            DetectorEvent.isCanceledPermanent = false;
+                        }
+                        notifyOperators(sender, this, "Automatic is Disabled!");
+                    }
+                } else {
+                    throw new WrongUsageException("inventory-detector auto <true|false>");
+                }
             }
         } else {
             throw new WrongUsageException(getCommandUsage(sender));

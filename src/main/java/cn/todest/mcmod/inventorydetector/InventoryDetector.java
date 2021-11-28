@@ -1,6 +1,7 @@
 package cn.todest.mcmod.inventorydetector;
 
 import cn.todest.mcmod.inventorydetector.common.command.ModCommand;
+import cn.todest.mcmod.inventorydetector.common.events.ChatEvent;
 import cn.todest.mcmod.inventorydetector.common.events.DetectorEvent;
 import cn.todest.mcmod.inventorydetector.common.events.InventoryEvent;
 import cn.todest.mcmod.inventorydetector.common.events.RecordGuiEvent;
@@ -20,6 +21,7 @@ public class InventoryDetector {
         MinecraftForge.EVENT_BUS.register(new RecordGuiEvent());
         MinecraftForge.EVENT_BUS.register(new DetectorEvent());
         MinecraftForge.EVENT_BUS.register(new InventoryEvent());
+        MinecraftForge.EVENT_BUS.register(new ChatEvent());
         ClientCommandHandler.instance.registerCommand(new ModCommand());
     }
 }

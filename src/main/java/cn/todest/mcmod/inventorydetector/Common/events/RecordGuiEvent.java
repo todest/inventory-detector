@@ -18,7 +18,7 @@ public class RecordGuiEvent {
     @SubscribeEvent
     public void renderGUI(RenderGameOverlayEvent event) {
         Map<ItemStack, Integer> ItemCount = DetectorEvent.ItemCount;
-        if (ItemCount == null || DetectorEvent.getCanceled()) {
+        if (ItemCount == null || DetectorEvent.isCanceledPermanent) {
             minecraft.renderEngine.bindTexture(Gui.icons);
             return;
         }

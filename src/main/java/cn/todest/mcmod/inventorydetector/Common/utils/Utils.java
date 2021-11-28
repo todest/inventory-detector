@@ -19,6 +19,16 @@ public class Utils {
         add(new ArrayList<String>(Arrays.asList("minecraft:red_mushroom", "Bonzo Fragment", "Bonzo")));
         add(new ArrayList<String>(Arrays.asList("minecraft:red_flower", "Scarf Fragment", "Scarf")));
     }};
+    public static ArrayList<String> DungeonStartMessages = new ArrayList<String>(Arrays.asList(
+            "Dungeon starts in 2 seconds.",
+            "Dungeon starts in 1 seconds.",
+            "Here, I found this map when I first entered the dungeon."
+    ));
+    public static ArrayList<String> DungeonStopMessages = new ArrayList<String>(Arrays.asList(
+            "Warping...",
+            "disconnected from the Dungeon and became a ghost.",
+            "Sending to server"
+    ));
 
     public static boolean isRecordItem(String type, String name) {
         for (ArrayList<String> arrayList : RecordItems) {
